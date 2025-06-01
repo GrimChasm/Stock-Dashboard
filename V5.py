@@ -1,5 +1,5 @@
 import streamlit as st
-import obb
+from openbb import obb
 import pandas as pd
 import plotly.graph_objs as go
 import pandas_ta as ta
