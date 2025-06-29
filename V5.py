@@ -1,3 +1,7 @@
+import os
+
+# Set a safe, writable directory
+os.environ["OPENBB_CACHE_DIR"] = "/tmp/openbb_cache"
 import streamlit as st
 from openbb import obb
 import pandas as pd
