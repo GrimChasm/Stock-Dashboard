@@ -1,7 +1,10 @@
 import os
 
-# Set a safe, writable directory
-os.environ["OPENBB_CACHE_DIR"] = "/tmp/openbb_cache"
+# Route all OpenBB writes to /tmp, which is writable on Streamlit Cloud
+os.environ["OPENBB_DATA_DIRECTORY"] = "/tmp/openbb"
+os.environ["OPENBB_LOGGING_DIRECTORY"] = "/tmp/openbb/logs"
+os.environ["OPENBB_AUTO_BUILD"] = "false"  # Disable dynamic builds if possible
+
 import streamlit as st
 from openbb import obb
 import pandas as pd
