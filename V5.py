@@ -1,9 +1,9 @@
 import os
 
-# Route all OpenBB writes to /tmp, which is writable on Streamlit Cloud
+# Set OpenBB to write only in safe directories on Streamlit Cloud
 os.environ["OPENBB_DATA_DIRECTORY"] = "/tmp/openbb"
 os.environ["OPENBB_LOGGING_DIRECTORY"] = "/tmp/openbb/logs"
-os.environ["OPENBB_AUTO_BUILD"] = "false"  # Disable dynamic builds if possible
+os.environ["OPENBB_AUTO_BUILD"] = "false"  # Prevent auto-building which causes PermissionError
 
 import streamlit as st
 from openbb import obb
@@ -13,6 +13,7 @@ import pandas_ta as ta
 import requests
 
 # --- Helper Functions ---
+
 def get_asset_df(symbol, is_crypto=False, start_date=None, end_date=None):
     if is_crypto:
         result = obb.crypto.price.historical(symbol, start_date=start_date, end_date=end_date)
@@ -49,7 +50,7 @@ def detect_signals(df):
     return buy_signals, sell_signals
 
 def get_asset_summary(symbol):
-    summary = obb.equity.fundamental.metrics(symbol)
+    summary = obb.equity.fundamentals.summary(symbol)
     return summary.to_dict() if summary else {}
 
 def fetch_sentiment(symbol):
@@ -110,7 +111,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 
 st.title("🚀 Multi-Asset Interactive Dashboard (Stocks & Crypto) + Alerts")
 
-symbols_input = st.sidebar.text_input("Enter Symbols (comma-separated, e.g., MSFT,AMZN,GOOG)", value="MSFT,AMZN,GOOG")
+symbols_input = st.sidebar.text_input("Enter Symbols (comma-separated, e.g., AAPL,BTC-USD)", value="AAPL,BTC-USD")
 symbols = [s.strip().upper() for s in symbols_input.split(",") if s.strip()]
 
 start_date = st.sidebar.date_input("Start Date", pd.to_datetime("2023-01-01"))
